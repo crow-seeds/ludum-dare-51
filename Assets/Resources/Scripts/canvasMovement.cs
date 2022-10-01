@@ -31,20 +31,7 @@ public class canvasMovement : MonoBehaviour
         
         if (!isMoving)
         {
-            if(!onBomb && (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)))
-            {
-                isMoving = true;
-                onBomb = true;
-                xPos = 0;
-                yPos = 900;
-            }
-            else if(onBomb && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
-            {
-                isMoving = true;
-                onBomb = false;
-                xPos = 0;
-                yPos = 0;
-            }else if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (!onBomb)
                 {
@@ -77,5 +64,10 @@ public class canvasMovement : MonoBehaviour
                 sections.anchoredPosition = new Vector2(xPos, yPos);
             }
         }
+    }
+
+    public bool isOnBomb()
+    {
+        return onBomb;
     }
 }
