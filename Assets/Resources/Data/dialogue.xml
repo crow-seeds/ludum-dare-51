@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data>
-	<dialogue id="0" order="0" options="Among Us,Fortnite" busy="Uh Huh" affectionMult="1" timeUntilAnswer="15" timeToAnswer="4"/>
+	<dialogue id="0" order="0" options="Yelp;You Know...;Sorry;I have no idea" busy="Uh Huh" affections="-20,-10,20,-15,-15" timeUntilAnswer="1.968" timeToAnswer="4.069"/>
+	<dialogue id="1" order="1" options="Glorpadlorp;Uh huh;Porjgweneyain;Wow, that’s really cool" busy="Uh Huh" affections="-20,20,5,-25,5" timeUntilAnswer="74.913" timeToAnswer="5"/>
+	<dialogue id="2" order="2" options="I'm sorry, what I meant was, how long ago was this?;Are you okay?;Wanna hear a joke?;Cool story" busy="Uh Huh" affections="-20,20,-15,-10,5" timeUntilAnswer="191.344" timeToAnswer="5"/>
+	<dialogue id="3" order="3" options="(Tell her about that time you got drunk and attempted to fist fight a fire);Uh huh;This restaurant blows" busy="Uh Huh" affections="-20,25,5,10,5" timeUntilAnswer="264.523" timeToAnswer="5"/>
 </data>

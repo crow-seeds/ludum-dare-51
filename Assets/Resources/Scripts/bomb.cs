@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.Rendering.PostProcessing;
 
 public class bomb : MonoBehaviour
 {
@@ -15,33 +16,117 @@ public class bomb : MonoBehaviour
     float yPos;
     float timer = 0;
 
-    bool above24Sec = true;
-    [SerializeField] float bombTimer = 30;
+    [SerializeField] float bombTimer = 10;
     [SerializeField] float accelSpeed;
 
     List<bool> wires = new List<bool> { true, true, true, true, true};
     List<bool> correctSolution = new List<bool> { true, true, true, true, true};
     List<int> wireImageNums = new List<int> { 0, 0, 0, 0, 0 };
+    [SerializeField] List<int> howManyBombs;
+    [SerializeField] List<string> bombTypes;
+    [SerializeField] int level = 0;
+    bool solved = false;
+    int health = 3;
+
+
 
     [SerializeField] TextMeshProUGUI bombTimeLCD;
     [SerializeField] List<RawImage> wireImages;
+    [SerializeField] List<RawImage> buttonImages;
+    [SerializeField] List<RawImage> symbolImages;
+    [SerializeField] Slider mathSlider;
+
+
+    [SerializeField] List<int> buttonNums = new List<int> { 0, 0, 0, 0 };
+    [SerializeField] List<bool> buttonPressed = new List<bool> { false, false, false, false };
+
+
     [SerializeField] RectTransform bombLocation;
     bool isMoving = false;
-    int level = 0;
     int howManyLeft = 3;
+    bool indicatorLight = false;
+    [SerializeField] RawImage indicatorLightTexture;
+
+    string currentType = "wire";
+    bool hasBlown = false;
 
     [SerializeField] AudioSource soundFx;
+    [SerializeField] AudioSource explosion;
+    [SerializeField] GameObject wireBomb;
+    [SerializeField] GameObject buttonBomb;
+    [SerializeField] GameObject mathBomb;
+    [SerializeField] cameraShake cShake;
 
+    [SerializeField] PostProcessVolume m_Volume;
+    [SerializeField] canvasMovement cm;
+    [SerializeField] hand hand;
+    Bloom bloom;
+
+    float timeBetween = 10;
+    float correctAnswer = 0;
+
+    float bloomTimer = 0;
+    bool blooming = false;
+    bool bloomDown = false;
+    bool active = false;
+
+    [SerializeField] public AudioSource ticking;
+    [SerializeField] date theDate;
+
+    [SerializeField] GameObject chatter2;
+    [SerializeField] GameObject bombStuff;
+
+    bool canStartBomb = false;
+    float bloomModifier = 0;
 
     void Start()
     {
-        generateBomb();
+        howManyLeft = howManyBombs[level];
+        Debug.Log(howManyLeft);
         EasingFunction.Ease movement = EasingFunction.Ease.EaseOutBack;
         function = EasingFunction.GetEasingFunction(movement);
         xPosOld = bombLocation.anchoredPosition.x;
         yPosOld = bombLocation.anchoredPosition.y;
+        m_Volume.profile.TryGetSettings(out bloom);
+        if(PlayerPrefs.GetInt("skippedIntro", 0) == 1)
+        {
+            canMoveOut = true;
+            if (level == 0)
+            {
+                StartCoroutine(waitForIntro());
+            }
+            else
+            {
+                ticking.mute = false;
+                active = true;
+                generateBomb();
+                StartCoroutine(resetBomb());
+            }
+
+        }
+        else
+        {
+            bombStuff.SetActive(true);
+        }
     }
 
+    IEnumerator waitForIntro()
+    {
+        yield return new WaitForSeconds(38.309f);
+        explosion.PlayOneShot(Resources.Load<AudioClip>("Sound/notification"), .7f);
+        ticking.mute = false;
+        bombLocation.localPosition = new Vector3(0, -900, 0);
+        xPosOld = bombLocation.anchoredPosition.x;
+        yPosOld = bombLocation.anchoredPosition.y;
+        isMoving = true;
+        xPos = 0;
+        yPos = 0;
+        active = true;
+        generateBomb();
+        StartCoroutine(resetBomb());
+    }
+
+    [SerializeField] RawImage background;
     // Update is called once per frame
     void Update()
     {
@@ -59,43 +144,90 @@ public class bomb : MonoBehaviour
             }
         }
 
-        bombTimer -= Time.deltaTime;
-        string display = "";
-        int roundedTimer = (int)bombTimer;
-        int minutesPassed = roundedTimer / 60;
-        if(minutesPassed <= 9)
+        if (active)
         {
-            display += "0";
-        }
-        display += minutesPassed.ToString() + ":";
-        if(roundedTimer % 60 <= 9)
-        {
-            display += 0;
-        }
-        display += roundedTimer % 60;
-        bombTimeLCD.text = display;
+            bombTimer -= Time.deltaTime;
+            bombTimer = Mathf.Max(0, bombTimer);
+            string display = "";
+            int roundedTimer = (int)(bombTimer * 100);
+            int minutesPassed = roundedTimer / 100;
+            if (minutesPassed <= 9)
+            {
+                display += "0";
+            }
+            display += minutesPassed.ToString() + "\n";
+            if (roundedTimer % 100 <= 9)
+            {
+                display += 0;
+            }
+            display += roundedTimer % 100;
+            bombTimeLCD.text = display;
 
-
-        if(roundedTimer <= 24 && above24Sec)
-        {
-            soundFx.Stop();
-            above24Sec = false;
-            soundFx.clip = Resources.Load<AudioClip>("Sound/bomb_panic");
-            soundFx.loop = false;
-            soundFx.Play();
-        }else if(roundedTimer > 24 && !above24Sec)
-        {
-            soundFx.Stop();
-            above24Sec = true;
-            soundFx.clip = Resources.Load<AudioClip>("Sound/bomb_regular");
-            soundFx.loop = true;
-            soundFx.Play();
+            if ((int)(bombTimer) % 2 == 0)
+            {
+                indicatorLight = false;
+                indicatorLightTexture.color = Color.gray;
+            }
+            else
+            {
+                indicatorLight = true;
+                indicatorLightTexture.color = Color.red;
+            }
         }
+        
+
+        if (blooming)
+        {
+            bloomTimer += Time.deltaTime;
+            bloom.intensity.value = Mathf.Max(function(0, 15, bloomTimer), bloom.intensity.value);
+            if (bloomTimer > 1f)
+            {
+                bloom.intensity.value = 15;
+                blooming = false;
+                StartCoroutine(resetBloom());
+            }
+        }
+
+        if (bloomDown && !blooming)
+        {
+            bloomTimer += Time.deltaTime * .2f;
+            if (!blooming)
+            {
+                bloom.intensity.value = function(15, cm.bloomModifier, bloomTimer);
+            }
+            
+            if (bloomTimer > 1f)
+            {
+                bloomDown = false;
+                bloomTimer = 0;
+            }
+        }
+    }
+
+    bool canMoveOut = false;
+
+    IEnumerator resetBloom()
+    {
+        yield return new WaitForSeconds(1f);
+        bloomDown = true;
+        bloomTimer = 0;
+    }
+
+    public bool getCanStartBomb()
+    {
+        return canMoveOut;
+    }
+
+    public void beginBomb()
+    {
+        canStartBomb = true;
+        canMoveOut = true;
+        //start emmet voice lines
     }
 
     public void cutWire(int i)
     {
-        if(wires[i] == true)
+        if(wires[i] == true && currentType == "wire")
         {
             wireImages[i].texture = Resources.Load<Texture>("Sprites/wire" + wireImageNums[i].ToString() + "_broken");
             wires[i] = false;
@@ -110,8 +242,129 @@ public class bomb : MonoBehaviour
                     break;
                 case 2:
                     //bomb explodes
-                    SceneManager.LoadScene("SampleScene");
+                    die();
                     break;
+            }
+        }else if(!buttonPressed[i] && currentType == "button")
+        {
+            buttonPressed[i] = true;
+            soundFx.PlayOneShot(Resources.Load<AudioClip>("Sound/button"), .5f);
+            buttonImages[i].texture = Resources.Load<Texture>("Sprites/button" + buttonNums[i].ToString() + "_select");
+            switch (buttonNums[i])
+            {
+                case 0:
+                    if (indicatorLight)
+                    {
+                        wires[i] = false;
+                    }
+                    else
+                    {
+                        die();
+                    }
+                    break;
+                case 1:
+                    if (!indicatorLight)
+                    {
+                        wires[i] = false;
+                    }
+                    else
+                    {
+                        die();
+                    }
+                    break;
+                case 2:
+                    wires[i] = false;
+                    break;
+                case 3:
+                    if (buttonNums[i - 1] == 0)
+                    {
+                        if (indicatorLight)
+                        {
+                            wires[i] = false;
+                        }
+                        else
+                        {
+                            die();
+                        }
+                    }
+                    else if(buttonNums[i - 1] == 1)
+                    {
+                        if (!indicatorLight)
+                        {
+                            wires[i] = false;
+                        }
+                        else
+                        {
+                            die();
+                        }
+                    }
+                    else if(buttonNums[i-1] == 2)
+                    {
+                        wires[i] = false;
+                    }
+                    else
+                    {
+                        if (buttonNums[i - 2] == 0)
+                        {
+                            if (indicatorLight)
+                            {
+                                wires[i] = false;
+                            }
+                            else
+                            {
+                                die();
+                            }
+                        }
+                        else if (buttonNums[i - 2] == 1)
+                        {
+                            if (!indicatorLight)
+                            {
+                                wires[i] = false;
+                            }
+                            else
+                            {
+                                die();
+                            }
+                        }
+                        else if (buttonNums[i - 2] == 2)
+                        {
+                            wires[i] = false;
+                        }
+                        else
+                        {
+                            if (buttonNums[i - 3] == 0)
+                            {
+                                if (indicatorLight)
+                                {
+                                    wires[i] = false;
+                                }
+                                else
+                                {
+                                    die();
+                                }
+                            }
+                            else if (buttonNums[i - 3] == 1)
+                            {
+                                if (!indicatorLight)
+                                {
+                                    wires[i] = false;
+                                }
+                                else
+                                {
+                                    die();
+                                }
+                            }
+                            else if (buttonNums[i - 3] == 2)
+                            {
+                                wires[i] = false;
+                            }
+                        }
+                    }
+                    break;
+            }
+            if(checkOk() == 2)
+            {
+                die();
             }
         }
         
@@ -120,6 +373,15 @@ public class bomb : MonoBehaviour
 
     int checkOk()
     {
+        if(currentType == "math")
+        {
+            if(Mathf.Abs(mathSlider.value - correctAnswer) < .1f)
+            {
+                return 1;
+            }
+            return 0;
+        }
+
         bool allCorrect = true;
         bool blowingUp = false;
 
@@ -136,23 +398,25 @@ public class bomb : MonoBehaviour
         }
 
         if (blowingUp)
-        {
-
+        { 
             return 2;
         }
         if (allCorrect)
         {
-            StartCoroutine(resetBomb());
             return 1;
         }
         return 0;
     }
-
-    void generateBomb()
+    [SerializeField] GameObject otherComponents;
+    public void generateBomb()
     {
         correctSolution = new List<bool> { true, true, true, true, true };
         wires = new List<bool> { true, true, true, true, true };
-        for(int i = 0; i < wireImages.Count; i++){
+        buttonPressed = new List<bool> { false, false, false, false };
+        correctAnswer = 0;
+        Debug.Log("oiashdfoijweaifiowejf");
+
+        for (int i = 0; i < wireImages.Count; i++){
             int randInt = Random.Range(0, 4);
             wireImageNums[i] = randInt;
             wireImages[i].texture = Resources.Load<Texture>("Sprites/wire" + randInt);
@@ -166,6 +430,34 @@ public class bomb : MonoBehaviour
             }
         }
 
+        for (int i = 0; i < buttonImages.Count; i++)
+        {
+            buttonImages[i].color = Color.white;
+        }
+
+        for (int i = 0; i < symbolImages.Count; i++)
+        {
+            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+
+        wireBomb.SetActive(false);
+        buttonBomb.SetActive(false);
+        otherComponents.SetActive(true);
+
+        currentType = bombTypes[level];
+        switch (bombTypes[level])
+        {
+            case "wire":
+                wireBomb.SetActive(true);
+                break;
+            case "button":
+                buttonBomb.SetActive(true);
+                break;
+            case "math":
+                mathBomb.SetActive(true);
+                break;
+        }
+        Debug.Log(level);
 
         switch (level)
         {
@@ -188,33 +480,73 @@ public class bomb : MonoBehaviour
             case 2:
                 for (int i = 0; i < 5; i++)
                 {
-                    if (Random.Range(0f, 1f) < .5f)
+                    if (Random.Range(0f, 1f) < .6f)
                     {
-                        wireImages[i].color = Color.white;
-                        if(i % 2  == 0)
+                        if(Random.Range(0f, 1f) < .5)
                         {
-                            correctSolution[i] = false;
+                            wireImages[i].color = Color.white;
+                            if (i % 2 == 0)
+                            {
+                                correctSolution[i] = false;
+                            }
+                        }
+                        else
+                        {
+                            wireImages[i].color = Color.yellow;
+                            if (i % 2 == 1)
+                            {
+                                correctSolution[i] = false;
+                            }
+                        }
+                    }
+                    else if(Random.Range(0f, 1f) < .85f)
+                    {
+                        if (Random.Range(0f, 1f) < .5f)
+                        {
+                            wireImages[i].color = Color.magenta;
+                        }
+                        else
+                        {
+                            wireImages[i].color = Color.blue;
                         }
                     }
                     else
+                    { 
+                        wireImages[i].color = Color.red;
+                        correctSolution[i] = false;
+                    }
+                }
+
+                for (int i = 0; i < 5; i++)
+                {
+                    if (wireImages[i].color == Color.magenta)
                     {
-                        wireImages[i].color = Color.yellow;
-                        if (i % 2 == 1)
+                        if (i != 0 && wireImages[i - 1].color == Color.blue)
+                        {
+                            correctSolution[i] = false;
+                        }
+                        if (i != wireImages.Count - 1 && wireImages[i + 1].color == Color.blue)
                         {
                             correctSolution[i] = false;
                         }
                     }
                 }
+
                 break;
             case 1:
                 for (int i = 0; i < 5; i++)
                 {
                     float randNum = Random.Range(0f, 1f);
-                    if (randNum < .5f)
+                    if(randNum < .1f)
+                    {
+                        wireImages[i].color = Color.red;
+                        correctSolution[i] = false;
+                    }
+                    else if (randNum < .6f)
                     {
                         wireImages[i].color = Color.magenta;
                     }
-                    else if(randNum < .8f)
+                    else if(randNum < .85f)
                     {
                         wireImages[i].color = Color.blue;
                     }
@@ -239,48 +571,324 @@ public class bomb : MonoBehaviour
                     }
                 }
                 break;
+            case 3:
+                for (int i = 0; i < 4; i++)
+                {
+                    if (Random.Range(0f, 1f) < .5f)
+                    {
+                        correctSolution[i] = false;
+                        buttonImages[i].texture = Resources.Load<Texture>("Sprites/button0");
+                        buttonNums[i] = 0;
+                    }
+                    else
+                    {
+                        buttonImages[i].texture = Resources.Load<Texture>("Sprites/button2");
+                        buttonNums[i] = 2;
+                    }
+                }
+                break;
+            case 4:
+                for (int i = 0; i < 4; i++)
+                {
+                    float rand = Random.Range(0f, 1f);
+                    if (rand < .25f)
+                    {
+                        correctSolution[i] = false;
+                        buttonImages[i].texture = Resources.Load<Texture>("Sprites/button0");
+                        buttonNums[i] = 0;
+                    }else if(rand < .75f)
+                    {
+                        buttonImages[i].texture = Resources.Load<Texture>("Sprites/button1");
+                        buttonNums[i] = 1;
+                        correctSolution[i] = false;
+                    }
+                    else
+                    {
+                        buttonImages[i].texture = Resources.Load<Texture>("Sprites/button2");
+                        buttonNums[i] = 2;
+                    }
+                }
+                break;
+            case 5:
+                for (int i = 0; i < 4; i++)
+                {
+                    float rand = Random.Range(0f, 1f);
+                    if (rand < .2f)
+                    {
+                        correctSolution[i] = false;
+                        buttonImages[i].texture = Resources.Load<Texture>("Sprites/button0");
+                        buttonNums[i] = 0;
+                    }
+                    else if (rand < .4f)
+                    {
+                        buttonImages[i].texture = Resources.Load<Texture>("Sprites/button1");
+                        buttonNums[i] = 1;
+                        correctSolution[i] = false;
+                    }
+                    else if (rand < .6f)
+                    {
+                        buttonImages[i].texture = Resources.Load<Texture>("Sprites/button2");
+                        buttonNums[i] = 2;
+                    }
+                    else
+                    {
+                        if(i == 0)
+                        {
+                            correctSolution[i] = false;
+                            buttonImages[i].texture = Resources.Load<Texture>("Sprites/button0");
+                            buttonNums[i] = 0;
+                        }
+                        else
+                        {
+                            buttonImages[i].texture = Resources.Load<Texture>("Sprites/button3");
+                            buttonNums[i] = 3;
+                            correctSolution[i] = correctSolution[i - 1];
+                        }
+                    }
+                }
+                break;
+            case 6:
+                for(int i = 0; i < symbolImages.Count; i++)
+                {
+                    if(Random.Range(0f, 1f) < .5f)
+                    {
+                        correctAnswer += .25f;
+                        symbolImages[i].texture = Resources.Load<Texture>("Sprites/triangle0");
+                    }
+                    else
+                    {
+                        symbolImages[i].texture = Resources.Load<Texture>("Sprites/triangle2");
+                    }
+                }
+                break;
+            case 7:
+                for (int i = 0; i < symbolImages.Count; i++)
+                {
+                    if (Random.Range(0f, 1f) < .7f)
+                    {
+                        
+                        symbolImages[i].texture = Resources.Load<Texture>("Sprites/triangle0");
+                        float rand = Random.Range(0f, 1f);
+                        if (rand < .5f)
+                        {
+                            correctAnswer += .25f;
+                        }
+                        else if(rand < .75f)
+                        {
+                            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 180);
+                            correctAnswer -= .25f;
+                        }
+                        else
+                        {
+                            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 90);
+                            correctAnswer += .125f;
+                        }
+                    }
+                    else
+                    {
+                        symbolImages[i].texture = Resources.Load<Texture>("Sprites/triangle2");
+                        float rand = Random.Range(0f, 1f);
+                        if (rand < .5f)
+                        {
+                            
+                        }
+                        else if (rand < .75f)
+                        {
+                            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 180);
+                        }
+                        else
+                        {
+                            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 90);
+                        }
+                    }
+                }
+                correctAnswer = Mathf.Max(correctAnswer, 0);
+                break;
+            case 8:
+                for (int i = 0; i < symbolImages.Count; i++)
+                {
+                    float rand = Random.Range(0f, 1f);
+                    if (rand < .4f)
+                    {
+                        symbolImages[i].texture = Resources.Load<Texture>("Sprites/triangle0");
+                        float rand2 = Random.Range(0f, 1f);
+                        if (rand2 < .5f)
+                        {
+                            correctAnswer += .25f;
+                        }
+                        else if (rand2 < .75f)
+                        {
+                            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 180);
+                            correctAnswer -= .25f;
+                        }
+                        else
+                        {
+                            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 90);
+                            correctAnswer += .125f;
+                        }
+                    }else if(rand < .8f)
+                    {
+                        symbolImages[i].texture = Resources.Load<Texture>("Sprites/triangle1");
+                        float rand2 = Random.Range(0f, 1f);
+                        if (rand2 < .5f)
+                        {
+                            correctAnswer += .3333f;
+                        }
+                        else if (rand2 < .75f)
+                        {
+                            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 180);
+                            correctAnswer -= .3333f;
+                        }
+                        else
+                        {
+                            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 90);
+                            correctAnswer += .166666f;
+                        }
+                    }
+                    else
+                    {
+                        symbolImages[i].texture = Resources.Load<Texture>("Sprites/triangle2");
+                        float rand2 = Random.Range(0f, 1f);
+                        if (rand < .5f)
+                        {
+
+                        }
+                        else if (rand < .75f)
+                        {
+                            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 180);
+                        }
+                        else
+                        {
+                            symbolImages[i].rectTransform.rotation = Quaternion.Euler(0, 0, 90);
+                        }
+                    }
+                }
+                correctAnswer = Mathf.Max(correctAnswer, 0);
+                break;
+
         }
 
-        bool hasCut = false;
-        for(int i = 0; i < wires.Count; i++)
+        if(currentType != "math")
         {
-            if (!correctSolution[i])
+            bool hasCut = false;
+            for (int i = 0; i < wires.Count; i++)
             {
-                hasCut = true;
+                if (!correctSolution[i])
+                {
+                    hasCut = true;
+                }
+            }
+
+            if (!hasCut)
+            {
+                generateBomb();
             }
         }
+    }
+    
 
-        if (!hasCut)
+    [SerializeField] AudioSource dateAudio;
+    void die()
+    {
+        if (!hasBlown)
         {
-            generateBomb();
+            health--;
+            if(health <= 0)
+            {
+                StartCoroutine(gameOver());
+            }else if(health == 2)
+            {
+                background.texture = Resources.Load<Texture>("Sprites/background_new_2");
+                chatter2.SetActive(false);
+                explosion.PlayOneShot(Resources.Load<AudioClip>("Sound/screams2"),.3f);
+                hand.fly();
+            }else if(health == 1)
+            {
+                background.texture = Resources.Load<Texture>("Sprites/background_new_3");
+                float curTime = dateAudio.time;
+                dateAudio.Stop();
+                dateAudio.clip = Resources.Load<AudioClip>("Sound/datePianoless");
+                dateAudio.time = curTime;
+                dateAudio.Play();
+                explosion.PlayOneShot(Resources.Load<AudioClip>("Sound/screams1"),.3f);
+            }
+            blooming = true;
+            cShake.Shake(5, .1f);
+            Debug.Log("diee!!!!");
+            explosion.PlayOneShot(Resources.Load<AudioClip>("Sound/explosion"));
+            hasBlown = true;
         }
+        
+    }
+
+    [SerializeField] SpriteRenderer redScreen;
+    IEnumerator gameOver()
+    {
+        colorFader c1 = Instantiate(Resources.Load<GameObject>("Prefabs/Sprite Fader")).GetComponent<colorFader>();
+        c1.set(redScreen, new Color(1, 0, 0, 1), 1.5f);
+        yield return new WaitForSeconds(1.5f);
+        SceneManager.LoadScene("gameOver");
+    }
+
+    void win()
+    {
+        Debug.Log("you win!!!");
+        PlayerPrefs.SetInt("finalHealth", health);
+        PlayerPrefs.SetFloat("finalAffection", theDate.getAffection());
+        if(theDate.getAffection() > 10)
+        {
+            SceneManager.LoadScene("winLoveless");
+        }
+        else
+        {
+            SceneManager.LoadScene("win");
+        }
+        
     }
 
     IEnumerator resetBomb()
     {
-        yield return new WaitForSeconds(.3f);
+        soundFx.clip = Resources.Load<AudioClip>("Sound/bomb_timer");
+        soundFx.time = 0;
+        soundFx.Play();
+
+        yield return new WaitForSeconds(timeBetween);
+        if(checkOk() == 0)
+        {
+            die();
+        }
+        if (checkOk() == 1)
+        {
+            soundFx.PlayOneShot(Resources.Load<AudioClip>("Sound/puzzle_solve"));
+        }
+        hasBlown = false;
         isMoving = true;
         xPos = 0;
         yPos = -900;
         howManyLeft--;
-        bombTimer += 10;
-        if(bombTimer < 24)
-        {
-            above24Sec = false;
-            soundFx.time = 24 - bombTimer;
-        }
-
-        Debug.Log(howManyLeft);
         yield return new WaitForSeconds(1f / accelSpeed + .1f);
-        if(howManyLeft == 0)
-        {
-            howManyLeft = 3;
-            level++;
-            bombTimer = Mathf.Min(30 + (level - 1) * 5, bombTimer);
-        }
         generateBomb();
         isMoving = true;
         xPos = 0;
-        yPos = 48;
+        yPos = 0;
+        if (howManyLeft == 0)
+        {
+            level++;
+            if(level == 9)
+            {
+                win();
+                yield break;
+            }
+            howManyLeft = howManyBombs[level];
+        }
+       
+        bombTimer = timeBetween;
+        StartCoroutine(resetBomb());
+        
+    }
+
+    public void makeActive()
+    {
+        active = true;
     }
 }

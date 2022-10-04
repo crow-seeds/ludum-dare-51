@@ -5,6 +5,7 @@ using UnityEngine;
 public class dialogue
 {
     List<string> options = new List<string>();
+    List<int> affections = new List<int>();
     int id = 0;
     int order = 0;
     string busyOption = "";
@@ -25,12 +26,17 @@ public class dialogue
         
     }
 
-    public dialogue(int i, string op, int or, string b, float a, float t1, float t2)
+    public dialogue(int i, string op, int or, string b, string a, float t1, float t2)
     {
         id = i;
         order = or;
-        options = new List<string>(op.Split(','));
-        affectionMult = a;
+        options = new List<string>(op.Split(';'));
+        affections = (new List<string>(a.Split(','))).ConvertAll(int.Parse);
+        Debug.Log(affections[0]);
+        Debug.Log(affections[1]);
+        Debug.Log(affections[2]);
+        Debug.Log(affections[3]);
+        Debug.Log(affections[4]);
         busyOption = b;
         timeUntilAnswer = t1;
         timeToAnswer = t2;
@@ -75,5 +81,10 @@ public class dialogue
         {
             return "";
         }
+    }
+
+    public int getAFfectionValue(int i) //0 is no response
+    {
+        return affections[i];
     }
 }
