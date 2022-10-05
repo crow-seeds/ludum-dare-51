@@ -173,7 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 5c92e5a30b018b1499811db57c6714e1, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -410,8 +410,8 @@ GameObject:
   - component: {fileID: 953820479}
   - component: {fileID: 953820478}
   - component: {fileID: 953820477}
-  - component: {fileID: 953820480}
   - component: {fileID: 953820481}
+  - component: {fileID: 953820482}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -485,18 +485,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &953820480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 953820476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a66346d16747264fb9b04d5154f5630, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &953820481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -509,6 +497,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3e9bf38ff989af4184561b5dfcafb0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &953820482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 953820476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e188ee899633d0b49870a5ae38b7359d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ratio: {x: 16, y: 9}
+  forceRatioOnAwake: 1
+  listenForWindowChanges: 1
+  createCameraForLetterBoxRendering: 1
+  findCamerasAutomatically: 1
+  letterBoxCameraColor: {r: 0, g: 0, b: 0, a: 1}
+  cameras: []
+  letterBoxCamera: {fileID: 0}
 --- !u!1 &1014844282
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,8 +847,8 @@ Canvas:
   m_GameObject: {fileID: 1685876767}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 953820478}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1

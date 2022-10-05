@@ -14,7 +14,8 @@ public class date : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] canvasMovement c;
-    float affection = 60;
+    float affection = 50;
+    float previousAffection = 50;
     [SerializeField] Image affectionBar;
     int dialogueIndex = 0;
     [SerializeField] TextAsset dialogueData;
@@ -142,48 +143,51 @@ public class date : MonoBehaviour
         {
             yield break;
         }
-        currentDialogue = dialogueList[dialogueIndex];
-        Debug.Log(dialogueList[dialogueIndex].getTimeUntilAnswer());
-        yield return new WaitForSeconds(dialogueList[dialogueIndex].getTimeUntilAnswer() - timer);
-        dialogueChoice = 0;
-        previousTime = dialogueList[dialogueIndex].getTimeUntilAnswer() + 1f + dateTotalTime;
-        colorFader2 c1 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
-        colorFader2 c2 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
-        colorFader4 c4 = Instantiate(Resources.Load<GameObject>("Prefabs/Real Image Fader")).GetComponent<colorFader4>();
-        fadeAllSprites(.5f, new Color(.5f, .5f, .5f));
-        c1.set(vignette, new Color(1, 1, 1, 1), .5f);
-        c2.set(darkBackground, new Color(0, 0, 0, .5f), .5f);
-        c4.set(timerIndicator, new Color(1, 1, 1, 1f), .5f);
-        timerIndicator.fillAmount = 1;
-        for(int i = 0; i < 4; i++)
+        else
         {
-            if(dialogueList[dialogueIndex].getOption(i) != "")
+            currentDialogue = dialogueList[dialogueIndex];
+            Debug.Log(dialogueList[dialogueIndex].getTimeUntilAnswer());
+            yield return new WaitForSeconds(dialogueList[dialogueIndex].getTimeUntilAnswer() - timer);
+            dialogueChoice = 0;
+            previousTime = dialogueList[dialogueIndex].getTimeUntilAnswer() + 1f + dateTotalTime;
+            colorFader2 c1 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
+            colorFader2 c2 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
+            colorFader4 c4 = Instantiate(Resources.Load<GameObject>("Prefabs/Real Image Fader")).GetComponent<colorFader4>();
+            fadeAllSprites(.5f, new Color(.5f, .5f, .5f));
+            c1.set(vignette, new Color(1, 1, 1, 1), .5f);
+            c2.set(darkBackground, new Color(0, 0, 0, .5f), .5f);
+            c4.set(timerIndicator, new Color(1, 1, 1, 1f), .5f);
+            timerIndicator.fillAmount = 1;
+            for (int i = 0; i < 4; i++)
             {
-                colorFader2 c6 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
-                c6.set(controls[i], new Color(1,1,1,1f), .5f);
-                TextMeshProUGUI t = optionTexts[i];
-                t.gameObject.SetActive(true);
-                t.text = dialogueList[dialogueIndex].getOption(i);
-                colorFader3 c3 = Instantiate(Resources.Load<GameObject>("Prefabs/Text Fader")).GetComponent<colorFader3>();
-                c3.set(t, Color.white, .5f);
+                if (dialogueList[dialogueIndex].getOption(i) != "")
+                {
+                    colorFader2 c6 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
+                    c6.set(controls[i], new Color(1, 1, 1, 1f), .5f);
+                    TextMeshProUGUI t = optionTexts[i];
+                    t.gameObject.SetActive(true);
+                    t.text = dialogueList[dialogueIndex].getOption(i);
+                    colorFader3 c3 = Instantiate(Resources.Load<GameObject>("Prefabs/Text Fader")).GetComponent<colorFader3>();
+                    c3.set(t, Color.white, .5f);
+                }
+
+            }
+            c.setBloomModifier(10);
+            yield return new WaitForSeconds(.5f);
+            canSelect = true;
+            dateTimer = dialogueList[dialogueIndex].getTimeToAnswer();
+            dateTotalTime = dialogueList[dialogueIndex].getTimeToAnswer();
+            yield return new WaitForSeconds(.5f + dateTotalTime);
+            c.setBloomModifier(0);
+            for (int i = 0; i < 4; i++)
+            {
+                optionTexts[i].gameObject.SetActive(false);
             }
 
+            canSelect = false;
+            dialogueIndex++;
+            StartCoroutine(doDialogue());
         }
-        c.setBloomModifier(10);
-        yield return new WaitForSeconds(.5f);
-        canSelect = true;
-        dateTimer = dialogueList[dialogueIndex].getTimeToAnswer();
-        dateTotalTime = dialogueList[dialogueIndex].getTimeToAnswer();
-        yield return new WaitForSeconds(.5f + dateTotalTime);
-        c.setBloomModifier(0);
-        for (int i = 0; i < 4; i++)
-        {
-            optionTexts[i].gameObject.SetActive(false);
-        }
-        
-        canSelect = false;
-        dialogueIndex++;
-        StartCoroutine(doDialogue());
     }
 
     [SerializeField] RawImage spaceIndicator;
@@ -236,7 +240,7 @@ public class date : MonoBehaviour
         }
         
     }
-
+    [SerializeField] Image affectionBarBorder;
 
     // Update is called once per frame
     void Update()
@@ -320,7 +324,7 @@ public class date : MonoBehaviour
                 {
                     dateAudio.PlayOneShot(Resources.Load<AudioClip>("Sound/date_bad"));
                     changeExpression("sad");
-                    if(currentDialogue.getAFfectionValue(dialogueChoice) < 20)
+                    if(currentDialogue.getAFfectionValue(dialogueChoice) < -20)
                     {
                         changeExpression("angry");
                     }
@@ -346,6 +350,7 @@ public class date : MonoBehaviour
             }
         }
 
+        previousAffection = affection;
         if (c.isOnBomb())
         {
             affection -= 2.5f * Time.deltaTime;
@@ -359,6 +364,7 @@ public class date : MonoBehaviour
 
         if(affection == 0 && !hasReached0)
         {
+            affectionBarBorder.sprite = Resources.Load<Sprite>("Sprites/boss_bar_broken");
             dateAudio.PlayOneShot(Resources.Load<AudioClip>("Sound/shatter"));
             hasReached0 = true;
         }
@@ -372,6 +378,33 @@ public class date : MonoBehaviour
         if (affection >= 100)
         {
             changeExpression("laugh");
+        }
+        else
+        {
+            if(previousAffection >= 100)
+            {
+                changeExpression("happy");
+            }
+
+            if(previousAffection >= 50 && affection < 50)
+            {
+                changeExpression("meh");
+            }
+
+            if (previousAffection < 50 && affection >= 50)
+            {
+                changeExpression("happy");
+            }
+
+            if (previousAffection >= 25 && affection < 25)
+            {
+                changeExpression("sad");
+            }
+
+            if (previousAffection < 25 && affection >= 25)
+            {
+                changeExpression("meh");
+            }
         }
 
 

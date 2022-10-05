@@ -595,8 +595,8 @@ Canvas:
   m_GameObject: {fileID: 1581294253}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 2022992521}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -687,7 +687,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -2
   m_Sprite: {fileID: 21300000, guid: 8b0f883cff6a7a542b023aca4ddb865b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -745,8 +745,8 @@ GameObject:
   - component: {fileID: 2022992522}
   - component: {fileID: 2022992521}
   - component: {fileID: 2022992520}
-  - component: {fileID: 2022992523}
   - component: {fileID: 2022992524}
+  - component: {fileID: 2022992525}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -820,18 +820,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2022992523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2022992519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a66346d16747264fb9b04d5154f5630, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2022992524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -844,6 +832,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63620931a60531745847c0324cea02b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2022992525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022992519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e188ee899633d0b49870a5ae38b7359d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ratio: {x: 16, y: 9}
+  forceRatioOnAwake: 1
+  listenForWindowChanges: 1
+  createCameraForLetterBoxRendering: 1
+  findCamerasAutomatically: 1
+  letterBoxCameraColor: {r: 0, g: 0, b: 0, a: 1}
+  cameras: []
+  letterBoxCamera: {fileID: 0}
 --- !u!1 &2049439793
 GameObject:
   m_ObjectHideFlags: 0

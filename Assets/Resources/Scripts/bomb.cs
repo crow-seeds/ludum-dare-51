@@ -824,6 +824,7 @@ public class bomb : MonoBehaviour
     [SerializeField] SpriteRenderer redScreen;
     IEnumerator gameOver()
     {
+        explosion.PlayOneShot(Resources.Load<AudioClip>("Sound/Dialogue/protag_0_0"));
         colorFader c1 = Instantiate(Resources.Load<GameObject>("Prefabs/Sprite Fader")).GetComponent<colorFader>();
         c1.set(redScreen, new Color(1, 0, 0, 1), 1.5f);
         yield return new WaitForSeconds(1.5f);
@@ -832,18 +833,20 @@ public class bomb : MonoBehaviour
 
     void win()
     {
-        Debug.Log("you win!!!");
-        PlayerPrefs.SetInt("finalHealth", health);
-        PlayerPrefs.SetFloat("finalAffection", theDate.getAffection());
-        if(theDate.getAffection() > 10)
+        if(health > 0)
         {
-            SceneManager.LoadScene("winLoveless");
-        }
-        else
-        {
-            SceneManager.LoadScene("win");
-        }
-        
+            Debug.Log("you win!!!");
+            PlayerPrefs.SetInt("finalHealth", health);
+            PlayerPrefs.SetFloat("finalAffection", theDate.getAffection());
+            if (theDate.getAffection() > 5)
+            {
+                SceneManager.LoadScene("winLoveless");
+            }
+            else
+            {
+                SceneManager.LoadScene("win");
+            }
+        } 
     }
 
     IEnumerator resetBomb()

@@ -63,7 +63,7 @@ public class cameraShake : MonoBehaviour
             Vector3 rand = Random.insideUnitSphere;
             for (int i = 0; i < sprites.Length; i++)
             {
-                sprites[i].transform.position +=  rand * newAmount * .5f;
+                sprites[i].transform.position +=  rand * newAmount * .2f;
             }
             duration -= _fakeDelta;
 

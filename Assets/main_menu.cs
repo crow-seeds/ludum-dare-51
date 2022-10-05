@@ -46,6 +46,15 @@ public class main_menu : MonoBehaviour
                 sections.anchoredPosition = new Vector2(xPos, yPos);
             }
         }
+
+        if (Screen.fullScreen)
+        {
+            fullscreen.text = "Window";
+        }
+        else
+        {
+            fullscreen.text = "Fullscreen";
+        }
     }
 
     public void play()
