@@ -12,6 +12,7 @@ public class dialogue
     float affectionMult = 1;
     float timeUntilAnswer = 10;
     float timeToAnswer = 3;
+    
 
 
     // Start is called before the first frame update
@@ -32,11 +33,6 @@ public class dialogue
         order = or;
         options = new List<string>(op.Split(';'));
         affections = (new List<string>(a.Split(','))).ConvertAll(int.Parse);
-        Debug.Log(affections[0]);
-        Debug.Log(affections[1]);
-        Debug.Log(affections[2]);
-        Debug.Log(affections[3]);
-        Debug.Log(affections[4]);
         busyOption = b;
         timeUntilAnswer = t1;
         timeToAnswer = t2;

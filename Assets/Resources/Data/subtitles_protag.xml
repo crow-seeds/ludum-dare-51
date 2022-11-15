@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<data>
+  <dialogue text="[YELPS]" time="7" option="1" character="1"/>
+  <dialogue text="" time="8" option="1" character="1"/>
+  <dialogue text="You know..." time="7" option="2" character="1"/>
+  <dialogue text="" time="8" option="2" character="1"/>
+  <dialogue text="The food here is bomb." time="13.4" option="2" character="1"/>
+  <dialogue text="" time="15.4" option="2" character="1"/>
+  <dialogue text="Sorry." time="7" option="3" character="1"/>
+  <dialogue text="" time="8" option="3" character="1"/>
+  <dialogue text="I have no idea." time="7" option="4" character="1"/>
+  <dialogue text="" time="8" option="4" character="1"/>
+  <dialogue text="I know this is our first date..." time="23.1" option="-1" character="1"/>
+  <dialogue text="...but what happens to be your name?" time="28.9" option="-1" character="1"/>
+  <dialogue text="" time="33.9" option="-1" character="1"/>
+  <dialogue text="Glorpadlorp" time="80.5" option="1" character="1"/>
+  <dialogue text="Uh huh" time="80.5" option="2" character="1"/>
+  <dialogue text="Porjgweneyain" time="80.5" option="3" character="1"/>
+  <dialogue text="Wow, that’s really cool" time="80.5" option="4" character="1"/>
+  <dialogue text="" time="83.5" option="1" character="1"/>
+  <dialogue text="" time="83.5" option="2" character="1"/>
+  <dialogue text="" time="83.5" option="3" character="1"/>
+  <dialogue text="" time="84.5" option="4" character="1"/>
+  <dialogue text="So...what's the hardest thing you've ever done?" time="110.4" option="-1" character="1"/>
+  <dialogue text="" time="115.4" option="-1" character="1"/>
+  <dialogue text="You are really bad at explaining things." time="188.8" option="-1" character="1"/>
+  <dialogue text="" time="191.8" option="-1" character="1"/>
+  <dialogue text="I'm sorry, what I meant was, how long ago was this?" time="207.5" option="1" character="1"/>
+  <dialogue text="Are you okay?" time="207.5" option="2" character="1"/>
+  <dialogue text="Wanna hear a joke?" time="207.5" option="3" character="1"/>
+  <dialogue text="Cool story" time="207.5" option="4" character="1"/>
+
+  <dialogue text="" time="212.5" option="1" character="1"/>
+  <dialogue text="" time="210.5" option="2" character="1"/>
+  <dialogue text="" time="210.5" option="3" character="1"/>
+  <dialogue text="" time="210.5" option="4" character="1"/>
+  
+  <dialogue text="Um....." time="224.3" option="-1" character="1"/>
+  <dialogue text="" time="226.3" option="-1" character="1"/>
+  <dialogue text="Tell me about your childhood." time="233.2" option="-1" character="1"/>
+  <dialogue text="" time="236.2" option="-1" character="1"/>
+  <dialogue text="I'm a firefighter." time="280.5" option="1" character="1"/>
+  <dialogue text="Uh huh." time="280.5" option="2" character="1"/>
+  <dialogue text="This restaurant blows." time="280.5" option="3" character="1"/>
+
+  <dialogue text="" time="283.5" option="1" character="1"/>
+  <dialogue text="" time="283.5" option="2" character="1"/>
+  <dialogue text="" time="283.5" option="3" character="1"/>
+  
+  <dialogue text="Makes sense." time="255.9" option="-1" character="1"/>
+  <dialogue text="" time="257.9" option="-1" character="1"/>
+  <dialogue text="What the fu-" time="284" option="-1" character="1"/>
+  <dialogue text="" time="286.5" option="-1" character="1"/>
+</data>

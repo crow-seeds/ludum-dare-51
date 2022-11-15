@@ -30,6 +30,7 @@ public class canvasMovement : MonoBehaviour
 
 
     [SerializeField] RectTransform sections;
+    [SerializeField] RectTransform sections2;
     [SerializeField] Transform camPosition;
     [SerializeField] RectTransform table;
     [SerializeField] float accelSpeed;
@@ -43,8 +44,11 @@ public class canvasMovement : MonoBehaviour
     [SerializeField] AudioSource dateBGM;
     [SerializeField] PostProcessVolume m_Volume;
     [SerializeField] bomb theBomb;
+    [SerializeField] date theDate;
     [SerializeField] AudioSource ticking;
     [SerializeField] AudioSource protag;
+    [SerializeField] AudioSource bombVoice;
+    [SerializeField] AudioSource dateVoice;
     ColorGrading cg;
     Bloom bloom;
 
@@ -63,11 +67,14 @@ public class canvasMovement : MonoBehaviour
         currentPosCam = new Vector3(xPosOldCam, yPosOldCam);
         m_Volume.profile.TryGetSettings(out cg);
         m_Volume.profile.TryGetSettings(out bloom);
+
+        bombVoice.GetComponent<AudioSource>().time = theDate.getCurrentStartPos();
+        dateVoice.GetComponent<AudioSource>().time = theDate.getCurrentStartPos();
+        protag.time = theDate.getCurrentStartPos();
     }
 
     public void setBloomModifier(float m)
     {
-        Debug.Log(m);
         float oldBloom = bloomModifier;
         bloomModifier = m;
         if (!onBomb)
@@ -89,69 +96,14 @@ public class canvasMovement : MonoBehaviour
        
         if (!isMoving)
         {
-            if (Input.GetKeyDown(KeyCode.Space) && theBomb.getCanStartBomb())
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                
-                if (!onBomb && bombOut == false && bombZoom == false)
-                {
-                    protag.PlayOneShot(Resources.Load<AudioClip>("Sound/swish0"));
-                    isMoving = true;
-                    onBomb = true;
-                    bombZoom = true;
-                    xPos = 0;
-                    yPos = 900;
-                    xPosCam = 0;
-                    yPosCam = -10;
-                    bombBGM.mute = false;
-                    dateBGM.mute = true;
-                    if(bloom.intensity.value == bloomModifier)
-                    {
-                        bloom.intensity.value = 0;
-                    }
-
-                    foreach (AudioSource a in bombAudio.GetComponentsInChildren<AudioSource>())
-                    {
-                        a.volume = a.volume * 3f;
-                    }
-
-                    foreach (AudioSource a in dateAudio.GetComponentsInChildren<AudioSource>())
-                    {
-                        a.volume = a.volume / 6f;
-                    }
-                }
-                else if(bombOut == false && bombZoom == false)
-                {
-                    protag.PlayOneShot(Resources.Load<AudioClip>("Sound/swish1"));
-                    bloom.intensity.value = Mathf.Max(bloom.intensity.value, bloomModifier);
-                    onBomb = false;
-                    //isMoving = true;
-                    bombOut = true;
-                    phoneInside.SetActive(false);
-                    xPos = 0;
-                    yPos = 0;
-                    xPosCam = 0;
-                    yPosCam = 0;
-                    bombBGM.mute = true;
-                    dateBGM.mute = false;
-                    goku.SetActive(false);
-
-                    foreach (AudioSource a in bombAudio.GetComponentsInChildren<AudioSource>())
-                    {
-                        a.volume = a.volume / 3f;
-                    }
-
-                    foreach (AudioSource a in dateAudio.GetComponentsInChildren<AudioSource>())
-                    {
-                        a.volume = a.volume * 6f;
-                    }
-
-                    if(Random.Range(0f,1f) < .01f)
-                    {
-                        goku.SetActive(true);
-                    }
-                }
+                Debug.Log("asdf");
+                switchView();
             }
         }
+
+        sections2.position = sections.position;
 
 
         if (isMoving)
@@ -209,6 +161,77 @@ public class canvasMovement : MonoBehaviour
 
         
     }
+
+
+    public void switchView()
+    {
+        theDate.spaceAction();
+        Debug.Log("pee");
+
+        if (theBomb.getCanStartBomb() && !isMoving)
+        {
+            if (!onBomb && bombOut == false && bombZoom == false)
+            {
+                protag.PlayOneShot(Resources.Load<AudioClip>("Sound/swish0"));
+                isMoving = true;
+                onBomb = true;
+                bombZoom = true;
+                xPos = 0;
+                yPos = 900;
+                xPosCam = 0;
+                yPosCam = -10;
+                bombBGM.mute = false;
+                dateBGM.mute = true;
+                if (bloom.intensity.value == bloomModifier)
+                {
+                    bloom.intensity.value = 0;
+                }
+
+                foreach (AudioSource a in bombAudio.GetComponentsInChildren<AudioSource>())
+                {
+                    a.volume = a.volume * 3f;
+                }
+
+                foreach (AudioSource a in dateAudio.GetComponentsInChildren<AudioSource>())
+                {
+                    a.volume = a.volume / 6f;
+                }
+            }
+            else if (bombOut == false && bombZoom == false)
+            {
+                protag.PlayOneShot(Resources.Load<AudioClip>("Sound/swish1"));
+                bloom.intensity.value = Mathf.Max(bloom.intensity.value, bloomModifier);
+                onBomb = false;
+                //isMoving = true;
+                bombOut = true;
+                phoneInside.SetActive(false);
+                xPos = 0;
+                yPos = 0;
+                xPosCam = 0;
+                yPosCam = 0;
+                bombBGM.mute = true;
+                dateBGM.mute = false;
+                goku.SetActive(false);
+
+                foreach (AudioSource a in bombAudio.GetComponentsInChildren<AudioSource>())
+                {
+                    a.volume = a.volume / 3f;
+                }
+
+                foreach (AudioSource a in dateAudio.GetComponentsInChildren<AudioSource>())
+                {
+                    a.volume = a.volume * 6f;
+                }
+
+                if (Random.Range(0f, 1f) < .01f)
+                {
+                    goku.SetActive(true);
+                }
+            }
+        }
+    }
+
+
     public Vector3 getCurrentPos()
     {
         return new Vector3(currentPos.x, currentPos.y, 0);

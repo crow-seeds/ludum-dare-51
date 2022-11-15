@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<data>
+  <dialogue text="So why'd you choose this restaurant?" time="0" option="-1" character="2"/>
+  <dialogue text="Did you do a brick of cocaine" time="9.75" option="1" character="2"/>
+  <dialogue text="before coming here?" time="12.5" option="1" character="2"/>
+  <dialogue text="Because I didn't-" time="14" option="1" character="2"/>
+  <dialogue text="Oh I get it!" time="8.25" option="2" character="2"/>
+  <dialogue text="Choosing a Dutch restaurant was your" time="9.5" option="2" character="2"/>
+  <dialogue text="quirky way of telling me your a feminist." time="11.5" option="2" character="2"/>
+  <dialogue text="Apology accepted." time="9.25" option="3" character="2"/>
+  <dialogue text="I'm actually turning 25 in a..." time="10.75" option="3" character="2"/>
+  <dialogue text="..a..a..about a year." time="13.25" option="3" character="2"/>
+  <dialogue text="...Okay?" time="8.75" option="4" character="2"/>
+  <dialogue text="I'm actually turning 25 in a..." time="10.75" option="4" character="2"/>
+  <dialogue text="..a..a..about a year." time="13.25" option="4" character="2"/>
+  <dialogue text="I'm actually turning 25 in a..." time="10.75" option="0" character="2"/>
+  <dialogue text="..a..a..about a year." time="13.25" option="0" character="2"/>
+  <dialogue text="Well you're not as much as an elephant as you look." time="38.8" option="-1" character="2"/>
+  <dialogue text="My name is Antigone" time="41.2" option="-1" character="2"/>
+  <dialogue text="I am way too far out of league" time="45" option="-1" character="2"/>
+  <dialogue text="for you to not be paying attention to me." time="47.2" option="-1" character="2"/>
+  <dialogue text="What's your name," time="50.7" option="-1" character="2"/>
+  <dialogue text="I thought it was Dumbo, but that can't be right." time="51.5" option="-1" character="2"/>
+  <dialogue text="What are you doing under the table?" time="57.6" option="-1" character="2"/>
+  <dialogue text="The last person to give me the silent treatment" time="66.9" option="-1" character="2"/>
+  <dialogue text="was my little sister," time="68.8" option="-1" character="2"/>
+  <dialogue text="unfortunately she did it at a very young age," time="70" option="-1" character="2"/>
+  <dialogue text="so she ended up forgetting how to speak." time="72.1" option="-1" character="2"/>
+  <dialogue text="That's a great impression of her!" time="82" option="1" character="2"/>
+  <dialogue text="She says one other sentence though," time="84" option="1" character="2"/>
+  <dialogue text="which leads to me spending most of my free time" time="86" option="1" character="2"/>
+  <dialogue text="drenching menus in garlic salt-" time="87.5" option="1" character="2"/>
+  <dialogue text="-anyways not important!" time="90" option="1" character="2"/>
+  <dialogue text="cough cough" time="84.5" option="2" character="2"/>
+  <dialogue text="Someone must have ordered a really smokey steak!" time="85.8" option="2" character="2"/>
+  <dialogue text="Are you seriously mocking my sister?!" time="83" option="3" character="2"/>
+  <dialogue text="For your information, that sounds nothing" time="85.5" option="3" character="2"/>
+  <dialogue text="like her!" time="88" option="3" character="3"/>
+  <dialogue text="Someone must have ordered a really smokey steak!" time="85.8" option="4" character="2"/>
+  <dialogue text="Dumbo?" time="93.4" option="-1" character="2"/>
+  <dialogue text="More like idiot!" time="94.4" option="-1" character="2"/>
+  <dialogue text="Burn!" time="96.2" option="-1" character="2"/>
+  <dialogue text="That's a tough question" time="116" option="-1" character="2"/>
+  <dialogue text="there's been a lot of things I" time="118.8" option="-1" character="2"/>
+  <dialogue text="struggle with in my life." time="120" option="-1" character="2"/>
+  <dialogue text="You better be playing Flappy Bird" time="123.7" option="-1" character="2"/>
+  <dialogue text="or else I'm going to be REALLY mad at you!" time="125.8" option="-1" character="2"/>
+  <dialogue text="But if I had to choose" time="131.2" option="-1" character="2"/>
+  <dialogue text="just one event" time="132.7" option="-1" character="2"/>
+  <dialogue text="My cat's death hit me really hard" time="136.3" option="-1" character="2"/>
+  <dialogue text="A while ago" time="140.4" option="-1" character="2"/>
+  <dialogue text="I started noticing that he wasn't as lively" time="141.4" option="-1" character="2"/>
+  <dialogue text="as before" time="143.6" option="-1" character="2"/>
+  <dialogue text="He stopped eating his food." time="146.5" option="-1" character="2"/>
+  <dialogue text="This happened on occasion and-" time="150.2" option="-1" character="2"/>
+  <dialogue text="-the vet said he was ok," time="153.1" option="-1" character="2"/>
+  <dialogue text="so I didn't think much of it." time="154.4" option="-1" character="2"/>
+  <dialogue text="The water here is soooo deeelicious!!!" time="156.9" option="-1" character="2"/>
+  <dialogue text="-uh, according to the vet" time="163.3" option="-1" character="2"/>
+  <dialogue text="she..she..needed to be put down" time="165" option="-1" character="2"/>
+  <dialogue text="her liver was failing to the point..." time="167.1" option="-1" character="2"/>
+  <dialogue text="..where she couldn't eat" time="169.2" option="-1" character="2"/>
+  <dialogue text="Uh- she was in so much pain that..that.." time="170.7" option="-1" character="2"/>
+  <dialogue text="..euthanizing her was the best way" time="173.8" option="-1" character="2"/>
+  <dialogue text="to relieve her suffering" time="176.4" option="-1" character="2"/>
+  <dialogue text="I..I.." time="178.2" option="-1" character="2"/>
+  <dialogue text="..I know it's selfish of me but," time="179.1" option="-1" character="2"/>
+  <dialogue text="I thought it cruel of the vet" time="181.1" option="-1" character="2"/>
+  <dialogue text="to bring that up after the autopsy." time="182.9" option="-1" character="2"/>
+  <dialogue text="*sob* *sob*" time="191.9" option="-1" character="2"/>
+  <dialogue text="Fair enough" time="193.6" option="-1" character="2"/>
+  <dialogue text="I hadn't really taken the time to process" time="194.7" option="-1" character="2"/>
+  <dialogue text="the emotions surround the..." time="197.6" option="-1" character="2"/>
+  <dialogue text="event." time="200.1" option="-1" character="2"/>
+  <dialogue text="I don't remember the exact date," time="211.3" option="1" character="2"/>
+  <dialogue text="I remember it was fall because my cat was orange" time="213.1" option="1" character="2"/>
+  <dialogue text="and I couldn't find my cat for a while." time="216.3" option="1" character="2"/>
+  <dialogue text="*sob* Are you even paying attention?" time="208" option="2" character="2"/>
+  <dialogue text="No I'm not okay!" time="210.2" option="2" character="2"/>
+  <dialogue text="My day has been absolutely fantastic!" time="213.6" option="2" character="2"/>
+  <dialogue text="Thank you for asking." time="216.9" option="2" character="2"/>
+  <dialogue text="My day has been absolutely fantastic!" time="213.6" option="3" character="2"/>
+  <dialogue text="Thank you for asking." time="216.9" option="3" character="2"/>
+  <dialogue text="My day has been absolutely fantastic!" time="213.6" option="4" character="2"/>
+  <dialogue text="Thank you for asking." time="216.9" option="4" character="2"/>
+  <dialogue text="Are you okay?" time="220.3" option="-1" character="2"/>
+  <dialogue text="You look like a bat caught in a flashlight!" time="221.6" option="-1" character="2"/>
+  <dialogue text="Uh, that's kind of a heavy topic." time="234.5" option="-1" character="2"/>
+  <dialogue text="When I was a kid, both my parents were working," time="236.8" option="-1" character="2"/>
+  <dialogue text="So I only had my cat to spend time with." time="239.4" option="-1" character="2"/>
+  <dialogue text="Do you remember me talking about" time="241.9" option="-1" character="2"/>
+  <dialogue text="my cat earlier? It's the same one!" time="243.2" option="-1" character="2"/>
+  <dialogue text="I would spend all my time with him." time="245.5" option="-1" character="2"/>
+  <dialogue text="And would even bring him to show and tell." time="247.7" option="-1" character="2"/>
+  <dialogue text="I actually didn't have a phone til I was 16," time="250.2" option="-1" character="2"/>
+  <dialogue text="I had to use smoke signals to get my friends" time="252.7" option="-1" character="2"/>
+  <dialogue text="to meet me!" time="254.3" option="-1" character="2"/>
+  <dialogue text="I fit in really well wherever I go" time="258.2" option="-1" character="2"/>
+  <dialogue text="I'm kinda like a chameleon" time="261.2" option="-1" character="2"/>
+  <dialogue text="This is my impression of a chameleon!" time="263.1" option="-1" character="2"/>
+  <dialogue text="*sniff*..CHWA CHWA CHWAK" time="265.5" option="-1" character="2"/>
+  <dialogue text="..*sniff*..CHWA CHWA CHWAK" time="267.4" option="-1" character="2"/>
+  <dialogue text="...*sniff*..CHWA CHWA CHWAK" time="269.2" option="-1" character="2"/>
+  <dialogue text="What about you?" time="271.3" option="-1" character="2"/>
+  <dialogue text="Tell me about your childhood." time="272.6" option="-1" character="2"/>
+  <dialogue text="cough cough" time="281.2" option="1" character="2"/>
+  <dialogue text="Someone must have ordered a really smokey steak!" time="282.5" option="1" character="2"/>
+  <dialogue text="So are you ever going to.. order..?" time="281.3" option="2" character="2"/>
+  <dialogue text="Oh! What an explosion of flavor!" time="281.2" option="3" character="2"/>
+  <dialogue text="These appetizers are SO good!" time="284.6" option="3" character="2"/>
+  <dialogue text="They pronounce WINE-doe in the Netherlands" time="289.2" option="-1" character="2"/>
+  <dialogue text="I'm really good at pronunciation" time="293.1" option="-1" character="2"/>
+  <dialogue text="So... I'm pretty curtain I got this covered" time="295.5" option="-1" character="2"/>
+  <dialogue text="I consider myself a pretty charitable person," time="300.3" option="-1" character="2"/>
+  <dialogue text="but I am never giving up a seat for anyone!" time="304.2" option="-1" character="2"/>
+  <dialogue text="No matter who, no matter what the circumstance!" time="307.2" option="-1" character="2"/>
+  <dialogue text="My nickname in highschool was 323,990 seconds" time="312" option="-1" character="2"/>
+  <dialogue text="because I only accept 10 second compliments!" time="316.1" option="-1" character="2"/>
+  <dialogue text="The seats here are so squishy!" time="319.8" option="-1" character="2"/>
+  <dialogue text="I could slam my head into them" time="321.7" option="-1" character="2"/>
+  <dialogue text="over and over and over...!" time="323.6" option="-1" character="2"/>
+  <dialogue text="....uhh again! Did I say over?" time="328.1" option="-1" character="2"/>
+  
+</data>

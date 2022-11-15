@@ -81,6 +81,7 @@ public class bomb : MonoBehaviour
 
     void Start()
     {
+        aHandler = GameObject.FindObjectOfType<achivementHandler>();
         howManyLeft = howManyBombs[level];
         Debug.Log(howManyLeft);
         EasingFunction.Ease movement = EasingFunction.Ease.EaseOutBack;
@@ -88,17 +89,38 @@ public class bomb : MonoBehaviour
         xPosOld = bombLocation.anchoredPosition.x;
         yPosOld = bombLocation.anchoredPosition.y;
         m_Volume.profile.TryGetSettings(out bloom);
-        if(PlayerPrefs.GetInt("skippedIntro", 0) == 1)
+        if(PlayerPrefs.GetInt("skippedIntro", 0) >= 1)
         {
             canMoveOut = true;
-            if (level == 0)
+            if (level == 0 && theDate.getCurrentStartPos() < 38.309f)
             {
                 StartCoroutine(waitForIntro());
             }
             else
             {
+                Debug.Log("paoewfoj");
                 ticking.mute = false;
                 active = true;
+                canMoveOut = true;
+
+                float offset = theDate.getCurrentStartPos() - 38.309f;
+                float sum = 0;
+
+                for (int i = 0; i < howManyBombs.Count; i++)
+                {
+                    float oldsum = sum;
+                    sum += 10 * howManyBombs[i];
+                    Debug.Log(sum);
+                    if(sum > offset)
+                    {
+                        level = i;
+                        howManyLeft = howManyBombs[i] - ((int)((offset - oldsum) / 10));
+                        bombTimer = 10 - (offset % 10);
+                        Debug.Log(bombTimer);
+                        break;
+                    }
+                }
+
                 generateBomb();
                 StartCoroutine(resetBomb());
             }
@@ -112,7 +134,7 @@ public class bomb : MonoBehaviour
 
     IEnumerator waitForIntro()
     {
-        yield return new WaitForSeconds(38.309f);
+        yield return new WaitForSeconds(38.309f - theDate.getCurrentStartPos());
         explosion.PlayOneShot(Resources.Load<AudioClip>("Sound/notification"), .7f);
         ticking.mute = false;
         bombLocation.localPosition = new Vector3(0, -900, 0);
@@ -791,10 +813,12 @@ public class bomb : MonoBehaviour
     void die()
     {
         if (!hasBlown)
-        {
+        { 
+            
             health--;
             if(health <= 0)
             {
+                theDate.changeExpression("surprised");
                 StartCoroutine(gameOver());
             }else if(health == 2)
             {
@@ -824,7 +848,9 @@ public class bomb : MonoBehaviour
     [SerializeField] SpriteRenderer redScreen;
     IEnumerator gameOver()
     {
+        aHandler.unlockAchievement(3);
         explosion.PlayOneShot(Resources.Load<AudioClip>("Sound/Dialogue/protag_0_0"));
+        explosion.PlayOneShot(Resources.Load<AudioClip>("Sound/date_scream"));
         colorFader c1 = Instantiate(Resources.Load<GameObject>("Prefabs/Sprite Fader")).GetComponent<colorFader>();
         c1.set(redScreen, new Color(1, 0, 0, 1), 1.5f);
         yield return new WaitForSeconds(1.5f);
@@ -835,20 +861,44 @@ public class bomb : MonoBehaviour
     {
         if(health > 0)
         {
+            if(aHandler != null)
+            {
+                aHandler.unlockAchievement(2);
+            }
+            
+            if(PlayerPrefs.GetInt("skippedIntro", 0) <= 2 && aHandler != null)
+            {
+                aHandler.unlockAchievement(10);
+                if(health == 3 && theDate.getAffection() > 5 )
+                {
+                    aHandler.unlockAchievement(11);
+                }
+            }
+
+
             Debug.Log("you win!!!");
             PlayerPrefs.SetInt("finalHealth", health);
             PlayerPrefs.SetFloat("finalAffection", theDate.getAffection());
             if (theDate.getAffection() > 5)
             {
-                SceneManager.LoadScene("winLoveless");
+                if(aHandler != null)
+                {
+                    aHandler.unlockAchievement(5);
+                }
+                
+                SceneManager.LoadScene("win");
             }
             else
             {
-                SceneManager.LoadScene("win");
+                if (aHandler != null)
+                {
+                    aHandler.unlockAchievement(4);
+                }
+                SceneManager.LoadScene("winLoveless");
             }
         } 
     }
-
+    [SerializeField] achivementHandler aHandler;
     IEnumerator resetBomb()
     {
         soundFx.clip = Resources.Load<AudioClip>("Sound/bomb_timer");
@@ -883,6 +933,14 @@ public class bomb : MonoBehaviour
                 yield break;
             }
             howManyLeft = howManyBombs[level];
+
+            if(level == 3 && aHandler != null)
+            {
+                aHandler.unlockAchievement(0);
+            }else if(level == 6 && aHandler != null)
+            {
+                aHandler.unlockAchievement(1);
+            }
         }
        
         bombTimer = timeBetween;

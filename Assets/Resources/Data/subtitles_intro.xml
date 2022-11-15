@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<data>
+  <dialogue text="So how are you feeling about the date?" time="0" option="-1" character="0"/>
+  <dialogue text="Hey Emmet Lee," time="2.5" option="-1" character="1"/>
+  <dialogue text="I'm a little nervous" time="5" option="-1" character="1"/>
+  <dialogue text="I had a head of garlic just before" time="6.5" option="-1" character="1"/>
+  <dialogue text="That's.. good umm.. that you prepared" time="9.5" option="-1" character="0"/>
+  <dialogue text="Also next time you call me Emily," time="13" option="-1" character="0"/>
+  <dialogue text="I'm going to kill you" time="15" option="-1" character="0"/>
+  <dialogue text="Oh I didn't..." time="16.5" option="-1" character="1"/>
+  <dialogue text="...know you'd be here approximately on time" time="18.1" option="-1" character="1"/>
+  <dialogue text="Hey!" time="20.7" option="-1" character="1"/>
+  <dialogue text="So you got any potential options?" time="21.8" option="-1" character="2"/>
+  <dialogue text="Not sure, I'm allergic to half the menu" time="24.9" option="-1" character="1"/>
+  <dialogue text="Why'd you choose this restaurant?" time="27.7" option="-1" character="2"/>
+</data>

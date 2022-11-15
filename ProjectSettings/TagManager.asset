@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - sprite
+  - handler
   layers:
   - Default
   - TransparentFX

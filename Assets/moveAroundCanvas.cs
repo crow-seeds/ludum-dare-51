@@ -17,8 +17,6 @@ public class moveAroundCanvas : MonoBehaviour
         thisObj = gameObject.GetComponent<RectTransform>();
         Vector3 rand = Random.insideUnitSphere * 45;
         thisObj.localPosition = new Vector3(thisObj.localPosition.x + rand.x, thisObj.localPosition.y + rand.y, 0);
-        Debug.Log(originalPosition);
-        Debug.Log(thisObj.localPosition);
     }
 
     // Update is called once per frame

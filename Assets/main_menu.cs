@@ -8,6 +8,7 @@ using TMPro;
 public class main_menu : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI fullscreen;
+    [SerializeField] TextMeshProUGUI subtitles;
     [SerializeField] float accelSpeed;
     EasingFunction.Function function;
     Vector2 currentPos;
@@ -19,6 +20,7 @@ public class main_menu : MonoBehaviour
     float yPos;
     [SerializeField] RectTransform sections;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +29,11 @@ public class main_menu : MonoBehaviour
         xPosOld = sections.anchoredPosition.x;
         yPosOld = sections.anchoredPosition.y;
         currentPos = new Vector2(xPosOld, yPosOld);
+
+        if(PlayerPrefs.GetInt("noSubtitles", 0) == 1)
+        {
+            subtitles.text = "Subtitles: Off";
+        }
     }
 
     // Update is called once per frame
@@ -57,9 +64,9 @@ public class main_menu : MonoBehaviour
         }
     }
 
-    public void play()
+    public void playFromChapter(int i)
     {
-        PlayerPrefs.SetInt("skippedIntro", 1);
+        PlayerPrefs.SetInt("skippedIntro", i);
         SceneManager.LoadScene("SampleScene");
     }
 
@@ -82,11 +89,32 @@ public class main_menu : MonoBehaviour
         }
     }
 
+    public void toggleSubtitles()
+    {
+        if(PlayerPrefs.GetInt("noSubtitles", 0) == 0)
+        {
+            PlayerPrefs.SetInt("noSubtitles", 1);
+            subtitles.text = "Subtitles: Off";
+        }
+        else
+        {
+            PlayerPrefs.SetInt("noSubtitles", 0);
+            subtitles.text = "Subtitles: On";
+        }
+    }
+
     public void moveToSettings()
     {
         isMoving = true;
         xPos = 0;
         yPos = 900;
+    }
+
+    public void moveToChapterSelect()
+    {
+        isMoving = true;
+        xPos = -1600;
+        yPos = 0;
     }
 
     public void backToMenu()

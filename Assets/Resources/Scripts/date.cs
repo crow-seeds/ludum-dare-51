@@ -20,7 +20,7 @@ public class date : MonoBehaviour
     int dialogueIndex = 0;
     [SerializeField] TextAsset dialogueData;
     IFormatProvider format = new CultureInfo("en-US");
-    dialogue[] dialogueList = new dialogue[10];
+    List<dialogue> dialogueList = new List<dialogue>();
     bool canSelect = false;
     [SerializeField] List<TextMeshProUGUI> optionTexts;
     [SerializeField] List<RawImage> controls;
@@ -42,15 +42,20 @@ public class date : MonoBehaviour
     [SerializeField] AudioSource dateAudio;
     [SerializeField] AudioSource emmetAudio;
     [SerializeField] AudioSource ticking;
+    [SerializeField] List<float> startPositions;
 
     [SerializeField] RawImage girl;
+    [SerializeField] TextMeshProUGUI dateSubtitleText;
     int dialogueChoice = 0;
+    int checkpoint = 0;
     float timer = 0;
 
     void Start()
     {
+        aHandler = GameObject.FindObjectOfType<achivementHandler>();
+        checkpoint = PlayerPrefs.GetInt("skippedIntro", 0);
         loadDialogue();
-        if (PlayerPrefs.GetInt("skippedIntro", 0) == 0)
+        if (checkpoint == 0)
         {
             protagAudio.clip = Resources.Load<AudioClip>("Sound/intro");
             protagAudio.Play();
@@ -64,7 +69,15 @@ public class date : MonoBehaviour
         }
         else
         {
-
+            for (int i = 0; i < dialogueList.Count; i++)
+            {
+                if(dialogueList[i].getTimeUntilAnswer() < 0)
+                {
+                    dialogueIndex++;
+                    affection += 10;
+                }
+            }
+            previousAffection = affection;
             StartCoroutine(doDialogue());
         }
         //StartCoroutine(doDialogue());
@@ -74,6 +87,8 @@ public class date : MonoBehaviour
 
     [SerializeField] RawImage protag;
     [SerializeField] RawImage protagBack;
+
+    achivementHandler aHandler;
     IEnumerator intro()
     {   
         yield return new WaitForSeconds(howLongTheIntroIs[0]);
@@ -89,7 +104,18 @@ public class date : MonoBehaviour
     IEnumerator goToTitleCard()
     {
         yield return new WaitForSeconds(4);
+        aHandler.unlockAchievement(6);
         SceneManager.LoadScene("titleCard");
+    }
+
+    public List<float> getStartPos()
+    {
+        return startPositions;
+    }
+
+    public float getCurrentStartPos()
+    {
+        return startPositions[PlayerPrefs.GetInt("skippedIntro", 0)];
     }
 
     void randomizeChatter()
@@ -119,9 +145,9 @@ public class date : MonoBehaviour
         {
             dialogue d = new dialogue(Convert.ToInt32(infonode.Attributes["id"].Value, format), infonode.Attributes["options"].Value, 
                 Convert.ToInt32(infonode.Attributes["order"].Value, format), infonode.Attributes["busy"].Value,
-                infonode.Attributes["affections"].Value, (float)Convert.ToDouble(infonode.Attributes["timeUntilAnswer"].Value, format),
+                infonode.Attributes["affections"].Value, (float)Convert.ToDouble(infonode.Attributes["timeUntilAnswer"].Value, format) - startPositions[checkpoint],
                 (float)Convert.ToDouble(infonode.Attributes["timeToAnswer"].Value, format));
-            dialogueList[d.getOrder()] = d;
+            dialogueList.Add(d);
         }
 
     }
@@ -139,7 +165,7 @@ public class date : MonoBehaviour
     float previousTime = 0;
     IEnumerator doDialogue()
     {
-        if(dialogueIndex >= dialogueList.Length)
+        if(dialogueIndex >= dialogueList.Count || dialogueList[dialogueIndex] == null)
         {
             yield break;
         }
@@ -149,6 +175,7 @@ public class date : MonoBehaviour
             Debug.Log(dialogueList[dialogueIndex].getTimeUntilAnswer());
             yield return new WaitForSeconds(dialogueList[dialogueIndex].getTimeUntilAnswer() - timer);
             dialogueChoice = 0;
+            dateSubtitleText.text = "";
             previousTime = dialogueList[dialogueIndex].getTimeUntilAnswer() + 1f + dateTotalTime;
             colorFader2 c1 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
             colorFader2 c2 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
@@ -216,7 +243,7 @@ public class date : MonoBehaviour
 
     public void selectAnswer(int i)
     {
-        if (canSelect)
+        if (canSelect && currentDialogue.getOption(i) != "")
         {
             colorFader2 c1 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
             
@@ -250,14 +277,15 @@ public class date : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A))
             {
                 selectAnswer(0);
-            }else if (Input.GetKeyDown(KeyCode.D) && currentDialogue.getOption(1) != "")
+            }else if (Input.GetKeyDown(KeyCode.D))
             {
+                Debug.Log("pressed");
                 selectAnswer(1);
-            }else if (Input.GetKeyDown(KeyCode.S) && currentDialogue.getOption(2) != "")
+            }else if (Input.GetKeyDown(KeyCode.S))
             {
                 selectAnswer(2);
             }
-            else if (Input.GetKeyDown(KeyCode.W) && currentDialogue.getOption(3) != "")
+            else if (Input.GetKeyDown(KeyCode.W))
             {
                 selectAnswer(3);
             }
@@ -265,18 +293,16 @@ public class date : MonoBehaviour
 
         timer += Time.deltaTime;
 
-        if(spaceToPan && Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            c.setBloomModifier(0);
-            colorFader2 c1 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
-            colorFader2 c2 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
-            colorFader2 c3 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
-            c1.set(vignette, new Color(1, 1, 1, 0), .5f);
-            c2.set(darkBackground, new Color(0, 0, 0, 0f), .5f);
-            c3.set(spaceIndicator, new Color(0, 0, 0, 0f), .5f);
-            fadeAllSprites(.5f, new Color(1f, 1f, 1f));
-            StartCoroutine(goToTitleCard());
-            panthing.makeMove();
+            Debug.Log(timer);
+        }
+
+        
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            spaceAction();
         }
 
         if(dateTotalTime != 0)
@@ -302,10 +328,7 @@ public class date : MonoBehaviour
                     colorFader2 c4 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
                     c4.set(controls[i], new Color(1, 1, 1, 0), .5f);
                 }
-                Debug.Log(affection);
-                Debug.Log(currentDialogue.getAFfectionValue(dialogueChoice));
                 affection += currentDialogue.getAFfectionValue(dialogueChoice);
-                Debug.Log(affection);
 
                 if (dialogueChoice > 0)
                 {
@@ -345,7 +368,7 @@ public class date : MonoBehaviour
 
                 
 
-                affection = Mathf.Min(100, affection);
+                affection = Mathf.Min(120, affection);
                 dateTotalTime = 0;
             }
         }
@@ -407,7 +430,15 @@ public class date : MonoBehaviour
             }
         }
 
+        if(affection >= 120 && checkpoint != 0 && aHandler != null) 
+        {
+            aHandler.unlockAchievement(8);
+        }
 
+        if(affection <= 0 && aHandler != null)
+        {
+            aHandler.unlockAchievement(9);
+        }
 
         affectionBar.fillAmount = Mathf.Min(affection / 100f, 1);
     }
@@ -423,5 +454,27 @@ public class date : MonoBehaviour
     public void changeExpression(string s)
     {
         girl.texture = Resources.Load<Texture>("Sprites/girl_" + s);
+    }
+
+    public int getDialogueChoice()
+    {
+        return dialogueChoice;
+    }
+
+    public void spaceAction()
+    {
+        if (spaceToPan)
+        {
+            c.setBloomModifier(0);
+            colorFader2 c1 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
+            colorFader2 c2 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
+            colorFader2 c3 = Instantiate(Resources.Load<GameObject>("Prefabs/Image Fader")).GetComponent<colorFader2>();
+            c1.set(vignette, new Color(1, 1, 1, 0), .5f);
+            c2.set(darkBackground, new Color(0, 0, 0, 0f), .5f);
+            c3.set(spaceIndicator, new Color(0, 0, 0, 0f), .5f);
+            fadeAllSprites(.5f, new Color(1f, 1f, 1f));
+            StartCoroutine(goToTitleCard());
+            panthing.makeMove();
+        }
     }
 }
